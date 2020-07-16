@@ -1,6 +1,8 @@
 #ifndef JASS_H
 #define JASS_H
 
+#include "Jass/SpdLogger.h"
+#include "Jass/Log.h"
 #include "Jass/Application.h"
 
 //------------------------EntryPoint------------------------
