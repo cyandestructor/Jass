@@ -2,6 +2,8 @@
 #define JASS_APPLICATION_H
 
 #include "Core.h"
+#include "IWindow.h"
+#include "Jass/Events/ApplicationEvents.h"
 
 namespace Jass {
 	
@@ -11,7 +13,16 @@ namespace Jass {
 		Application();
 		virtual ~Application();
 
+		void OnEvent(Event& e);
+
 		void Run();
+
+	private:
+		bool OnWindowClose(WindowCloseEvent& e);
+
+		std::unique_ptr<IWindow> m_window;
+		bool m_isRunning = true;
+
 	};
 
 	//Must be defined in client

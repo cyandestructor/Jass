@@ -77,6 +77,9 @@
       <Filter>Jass</Filter>
     </ClInclude>
     <ClInclude Include="src\jasspch.h" />
+    <ClInclude Include="src\Jass\IWindow.h" />
+    <ClInclude Include="src\Platform\Windows\WinWindow.h" />
+    <ClInclude Include="src\Jass\Events\Events.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Jass\Application.cpp">
@@ -86,5 +89,6 @@
       <Filter>Jass</Filter>
     </ClCompile>
     <ClCompile Include="src\jasspch.cpp" />
+    <ClCompile Include="src\Platform\Windows\WinWindow.cpp" />
   </ItemGroup>
 </Project>
