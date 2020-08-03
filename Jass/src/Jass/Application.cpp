@@ -3,14 +3,23 @@
 
 #include "Jass/Events/EventDispatcher.h"
 
+// TEMPORARY
+#include "Jass/Renderer/Renderer.h"
+
 namespace Jass {
 
-#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+	Application* Application::s_instance = nullptr;
 
 	Application::Application()
 	{
+		JASS_CORE_ASSERT(!s_instance, "Application already exists");
+		s_instance = this;
 		m_window = std::unique_ptr<IWindow>(IWindow::Create());
 		m_window->SetEventCallBack(BIND_EVENT_FN(Application::OnEvent));
+
+		m_imGuiLayer = new ImGuiLayer();
+		PushOverlay(m_imGuiLayer);
+
 	}
 
 	Application::~Application()
@@ -35,11 +44,13 @@ namespace Jass {
 
 	void Application::PushLayer(Layer* layer)
 	{
+		layer->OnAttach();
 		m_layerStack.PushLayer(layer);
 	}
 
 	void Application::PushOverlay(Layer* layer)
 	{
+		layer->OnAttach();
 		m_layerStack.PushOverlay(layer);
 	}
 
@@ -47,8 +58,16 @@ namespace Jass {
 	{
 		while (m_isRunning) {
 
+			RenderCommand::SetClearColor({ 0.2f, 0.2f, 0.2f, 0.0f });
+			RenderCommand::Clear();
+
 			for (Layer* layer : m_layerStack)
 				layer->OnUpdate();
+
+			m_imGuiLayer->Begin();
+			for (Layer* layer : m_layerStack)
+				layer->OnImGuiRender();
+			m_imGuiLayer->End();
 
 			m_window->OnUpdate();
 		}
@@ -59,4 +78,5 @@ namespace Jass {
 		m_isRunning = false;
 		return true;
 	}
+
 }

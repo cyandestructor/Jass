@@ -1,9 +1,8 @@
 #include "jasspch.h"
 #include "WinWindow.h"
-
-#include <glad/glad.h>
-
 #include "Jass/Events/Events.h"
+
+#include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Jass {
 
@@ -22,7 +21,7 @@ namespace Jass {
 	void WinWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_window);
+		m_context->SwapBuffers();
 	}
 
 	inline void WinWindow::SetVSync(bool enable)
@@ -55,9 +54,9 @@ namespace Jass {
 
 		m_window = glfwCreateWindow((int)m_windowData.Width, (int)m_windowData.Height,
 			m_windowData.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_window);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		JASS_CORE_ASSERT(status, "Could not initialize Glad");
+		//Create the context
+		m_context = std::make_unique<OpenGLContext>(m_window);
+		m_context->Init();
 		glfwSetWindowUserPointer(m_window, &m_windowData);
 		SetVSync(true);
 
@@ -75,6 +74,7 @@ namespace Jass {
 		SetWindowSizeCallback();
 		SetWindowCloseCallback();
 		SetWindowKeyCallback();
+		SetWindowCharCallback();
 		SetWindowMouseButtonCallback();
 		SetWindowMouseScrollCallback();
 		SetWindowMouseMoveCallback();
@@ -129,6 +129,16 @@ namespace Jass {
 					break;
 				}
 			}
+			});
+	}
+
+	void WinWindow::SetWindowCharCallback()
+	{
+		glfwSetCharCallback(m_window, [](GLFWwindow* window, unsigned int codepoint) {
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			KeyTypedEvent e(codepoint);
+
+			data.EventCallback(e);
 			});
 	}
 

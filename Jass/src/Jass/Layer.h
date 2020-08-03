@@ -2,7 +2,7 @@
 #define JASS_LAYER_H
 
 #include "Core.h"
-#include "Events/Event.h"
+#include "Events/Events.h"
 
 namespace Jass {
 
@@ -14,8 +14,9 @@ namespace Jass {
 		virtual ~Layer();
 
 		virtual void OnAttach() {}
-		virtual void OnDettach() {}
+		virtual void OnDetach() {}
 		virtual void OnUpdate() {}
+		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& e) {}
 
 		inline const std::string& GetName() const { return m_debugName; }
