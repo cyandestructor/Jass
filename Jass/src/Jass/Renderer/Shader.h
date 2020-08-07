@@ -1,21 +1,20 @@
 #ifndef JASS_SHADER_H
 #define JASS_SHADER_H
 
-#include "jasspch.h"
+#include <string>
+#include <glm/glm.hpp>
 
 namespace Jass {
 
 	class JASS_API Shader {
 
 	public:
-		Shader(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc);
-		virtual ~Shader();
+		virtual ~Shader() = default;
 
-		void Bind();
-		void Unbind();
+		virtual void Bind() = 0;
+		virtual void Unbind() = 0;
 
-	private:
-		unsigned int m_program = 0;
+		static Shader* Create(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc);
 
 	};
 
