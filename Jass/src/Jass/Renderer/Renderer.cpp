@@ -8,6 +8,16 @@ namespace Jass {
 	// TEMPORARY
 	std::unique_ptr<Renderer::SceneData> Renderer::sceneData = std::make_unique<Renderer::SceneData>();
 
+	void Renderer::Init()
+	{
+		RenderCommand::Init();
+	}
+
+	void Renderer::OnWindowResize(unsigned int width, unsigned int height)
+	{
+		RenderCommand::SetViewport(0, 0, width, height);
+	}
+
 	void Renderer::BeginScene(const Camera& camera)
 	{
 		sceneData->ViewProjectionMatrix = camera.GetViewProjection();
@@ -17,9 +27,9 @@ namespace Jass {
 	{
 	}
 
-	void Renderer::Submit(const std::shared_ptr<Shader>& shader, 
-		const std::shared_ptr<VertexArray>& vertexArray,
-		const glm::mat4& transformation)
+	void Renderer::Submit(const Ref<Shader>& shader, 
+		const Ref<VertexArray>& vertexArray,
+		const JMat4& transformation)
 	{
 		shader->Bind();
 		// Temporary

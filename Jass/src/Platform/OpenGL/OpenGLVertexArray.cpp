@@ -50,7 +50,7 @@ namespace Jass {
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
+	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
 		JASS_CORE_ASSERT(vertexBuffer != nullptr, "Vertex buffer should not be nullptr");
 		JASS_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex buffer has no layout");
@@ -66,14 +66,14 @@ namespace Jass {
 				ToGLenum(element.Type),
 				element.Normalized ? GL_TRUE : GL_FALSE,
 				vertexBuffer->GetLayout().GetStride(),
-				(const void*)element.Offset);
+				(const void*)(uint64_t)element.Offset);
 			index++;
 		}
 
 		m_vertexBuffers.push_back(vertexBuffer);
 	}
 
-	void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
+	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
 		JASS_CORE_ASSERT(indexBuffer != nullptr, "Index buffer should not be nullptr");
 		glBindVertexArray(m_rendererID);

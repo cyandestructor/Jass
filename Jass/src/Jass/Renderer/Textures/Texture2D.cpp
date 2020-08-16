@@ -1,12 +1,12 @@
 #include "jasspch.h"
-#include "Shader.h"
+#include "Texture2D.h"
 
-#include "Renderer.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+#include "Jass/Renderer/Renderer.h"
+#include "Platform/OpenGL/Textures/OpenGLTexture2D.h"
 
 namespace Jass {
 
-	Shader* Shader::Create(const std::string& vertexShaderSrc, const std::string& fragmentShaderSrc)
+	Ref<Texture2D> Texture2D::Create(const std::string& filepath)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -14,7 +14,7 @@ namespace Jass {
 				JASS_CORE_ASSERT(false, "Renderer API None is currently not supported");
 				return nullptr;
 			case RendererAPI::API::OpenGL:
-				return new OpenGLShader(vertexShaderSrc, fragmentShaderSrc);
+				return std::make_shared<OpenGLTexture2D>(filepath);
 		}
 
 		JASS_CORE_ASSERT(false, "Unknow Renderer API");
@@ -22,4 +22,3 @@ namespace Jass {
 	}
 
 }
-

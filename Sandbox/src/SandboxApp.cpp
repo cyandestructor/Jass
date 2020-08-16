@@ -1,9 +1,7 @@
 #include "Jass.h"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
-// TEMPORARY
+// EXTREMELY TEMPORARY
 #include "Platform/OpenGL/OpenGLShader.h"
 
 class ExampleLayer : public Jass::Layer {
@@ -11,10 +9,11 @@ class ExampleLayer : public Jass::Layer {
 public:
 	
 	ExampleLayer() :
-		Layer("Example"), m_camera({ -1.6f,1.6f,-0.9f,0.9f })
+		Layer("Example"), m_cameraController(1280.0f / 720.0f, true)
 	{
-		RendererAPITest();
+		//RendererAPITest();
 		RenderColorSquareTest();
+		RenderTexSquareTest();
 	}
 
 	void OnUpdate(Jass::Timestep ts) override
@@ -22,74 +21,52 @@ public:
 		Jass::RenderCommand::SetClearColor({ 0.2f, 0.2f, 0.2f, 0.0f });
 		Jass::RenderCommand::Clear();
 
-		MoveCameraInput(ts);
+		//Jass::JMat4 transformation;
+		//MoveTriangle(transformation, ts);
 
-		glm::mat4 transformation;
-		MoveTriangle(transformation, ts);
+		m_cameraController.OnUpdate(ts);
 
 		// Temporary
 		std::dynamic_pointer_cast<Jass::OpenGLShader>(m_flatColorShader)->Bind();
 		std::dynamic_pointer_cast<Jass::OpenGLShader>(m_flatColorShader)->UploadUniformFloat4("u_color", m_squareColor);
 
-		Jass::Renderer::BeginScene(m_camera);
-		Jass::Renderer::Submit(m_flatColorShader, m_squareVertexArray);
-		Jass::Renderer::Submit(m_shader, m_vertexArray, transformation);
+		Jass::Renderer::BeginScene(m_cameraController.GetCamera());
+		Jass::Renderer::Submit(m_flatColorShader, m_squareVertexArray, Jass::Scale(Jass::JMat4(0.1f),Jass::JVec3(1.1f)));
+		m_texture2D->Bind();
+		Jass::Renderer::Submit(m_shaderLibrary.GetShader("TextureShader"), m_texSquareVertexArray);
+		m_textureAlpha2D->Bind();
+		Jass::Renderer::Submit(m_shaderLibrary.GetShader("TextureShader"), m_texSquareVertexArray);
+		//Jass::Renderer::Submit(m_shader, m_vertexArray, transformation);
 		Jass::Renderer::EndScene();
 	}
 
 	void OnImGuiRender() override
 	{
 		ImGui::Begin("Settings");
-		ImGui::ColorEdit4("Color", glm::value_ptr(m_squareColor));
+		ImGui::ColorEdit4("Color", Jass::GetPtr(m_squareColor));
 		ImGui::End();
 	}
 
 	void OnEvent(Jass::Event& e) override
 	{
-		//Jass::EventDispatcher dispatcher(e);
-		//dispatcher.Dispatch<Jass::KeyPressedEvent>(BIND_EVENT_FN(ExampleLayer::OnKeyPressed));
-	}
-
-	void MoveCameraInput(Jass::Timestep ts)
-	{
-		auto cameraPosition = m_camera.GetPosition();
-		auto cameraRotation = m_camera.GetRotation();
-		float cameraMoveSpeed = 3.0f;
-		float cameraRotationSpeed = 100.0f;
-
-		if (Jass::Input::IsKeyPressed(JASS_KEY_UP))
-			cameraPosition.y += cameraMoveSpeed * ts;
-		else if (Jass::Input::IsKeyPressed(JASS_KEY_DOWN))
-			cameraPosition.y -= cameraMoveSpeed * ts;
-
-		if (Jass::Input::IsKeyPressed(JASS_KEY_RIGHT))
-			cameraPosition.x += cameraMoveSpeed * ts;
-		else if (Jass::Input::IsKeyPressed(JASS_KEY_LEFT))
-			cameraPosition.x -= cameraMoveSpeed * ts;
-
-		if (Jass::Input::IsKeyPressed(JASS_KEY_A))
-			cameraRotation.z += cameraRotationSpeed * ts;
-		else if (Jass::Input::IsKeyPressed(JASS_KEY_D))
-			cameraRotation.z -= cameraRotationSpeed * ts;
-
-		m_camera.SetPosition(cameraPosition);
-		m_camera.SetRotation(cameraRotation);
-	}
-
-	bool OnKeyPressed(Jass::KeyPressedEvent& e)
-	{	
-		MoveCamera(e.GetKeyCode());
-		return true;
+		m_cameraController.OnEvent(e);
 	}
 
 private:
-	Jass::OrthographicCamera m_camera;
-	std::shared_ptr<Jass::VertexArray> m_vertexArray;
-	std::shared_ptr<Jass::Shader> m_shader;
+	Jass::OrthographicCameraController m_cameraController;
 
-	std::shared_ptr<Jass::VertexArray> m_squareVertexArray;
-	std::shared_ptr<Jass::Shader> m_flatColorShader;
-	glm::vec4 m_squareColor = glm::vec4(0.2f, 0.3f, 0.8f, 1.0f);
+	Jass::ShaderLibrary m_shaderLibrary;
+
+	Jass::Ref<Jass::VertexArray> m_vertexArray;
+	Jass::Ref<Jass::Shader> m_shader;
+	
+	Jass::Ref<Jass::VertexArray> m_squareVertexArray;
+	Jass::Ref<Jass::Shader> m_flatColorShader;
+	Jass::JVec4 m_squareColor = Jass::JVec4(0.2f, 0.3f, 0.8f, 1.0f);
+
+	Jass::Ref<Jass::Texture2D> m_textureAlpha2D;
+	Jass::Ref<Jass::Texture2D> m_texture2D;
+	Jass::Ref<Jass::VertexArray> m_texSquareVertexArray;
 
 	void RendererAPITest()
 	{
@@ -135,12 +112,11 @@ private:
 			
 		)";
 
-		m_shader.reset(Jass::Shader::Create(vertexShader, fragmentShader));
+		m_shader = Jass::Shader::Create("TriangleShader", vertexShader, fragmentShader);
 
-		m_vertexArray.reset(Jass::VertexArray::Create());
+		m_vertexArray = Jass::VertexArray::Create();
 
-		std::shared_ptr<Jass::VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(Jass::VertexBuffer::Create({ positions,sizeof(positions),Jass::DataUsage::StaticDraw }));
+		auto vertexBuffer = Jass::VertexBuffer::Create({ positions,sizeof(positions),Jass::DataUsage::StaticDraw });
 
 		Jass::BufferLayout layout = {
 			{Jass::ShaderDataType::Float3, "position" },
@@ -150,8 +126,7 @@ private:
 
 		m_vertexArray->AddVertexBuffer(vertexBuffer);
 
-		std::shared_ptr<Jass::IndexBuffer> indexBuffer;
-		indexBuffer.reset(Jass::IndexBuffer::Create({ indices,3,Jass::DataUsage::StaticDraw }));
+		auto indexBuffer = Jass::IndexBuffer::Create({ indices,3,Jass::DataUsage::StaticDraw });
 
 		m_vertexArray->SetIndexBuffer(indexBuffer);
 	}
@@ -190,7 +165,7 @@ private:
 			
 		)";
 
-		m_flatColorShader.reset(Jass::Shader::Create(vertexShader, fragmentShader));
+		m_flatColorShader = Jass::Shader::Create("FlatColorShader", vertexShader, fragmentShader);
 
 		float positions[] = {
 			-0.75f, -0.75f, 0.0f,	// 0
@@ -204,46 +179,60 @@ private:
 			2, 3, 0
 		};
 
-		m_squareVertexArray.reset(Jass::VertexArray::Create());
+		m_squareVertexArray = Jass::VertexArray::Create();
 
-		std::shared_ptr<Jass::VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(Jass::VertexBuffer::Create({ positions,sizeof(positions),Jass::DataUsage::StaticDraw }));
+		auto vertexBuffer = Jass::VertexBuffer::Create({ positions,sizeof(positions),Jass::DataUsage::StaticDraw });
 		vertexBuffer->SetLayout({
 			Jass::BufferElement(Jass::ShaderDataType::Float3,"position")
 			});
 
 		m_squareVertexArray->AddVertexBuffer(vertexBuffer);
 
-		std::shared_ptr<Jass::IndexBuffer> indexBuffer;
-		indexBuffer.reset(Jass::IndexBuffer::Create({ indices,6,Jass::DataUsage::StaticDraw }));
+		auto indexBuffer = Jass::IndexBuffer::Create({ indices,6,Jass::DataUsage::StaticDraw });
 
 		m_squareVertexArray->SetIndexBuffer(indexBuffer);
-
 	}
 
-	void MoveCamera(int keyCode)
+	void RenderTexSquareTest()
 	{
-		auto cameraPosition = m_camera.GetPosition();
-		switch (keyCode)
-		{
-			case JASS_KEY_LEFT:
-				m_camera.SetPosition(cameraPosition + glm::vec3(-0.1f, 0.0f, 0.0f));
-				break;
-			case JASS_KEY_RIGHT:
-				m_camera.SetPosition(cameraPosition + glm::vec3(0.1f, 0.0f, 0.0f));
-				break;
-			case JASS_KEY_UP:
-				m_camera.SetPosition(cameraPosition + glm::vec3(0.0f, 0.1f, 0.0f));
-				break;
-			case JASS_KEY_DOWN:
-				m_camera.SetPosition(cameraPosition + glm::vec3(0.0f, -0.1f, 0.0f));
-				break;
-		}
+		auto texShader = m_shaderLibrary.Load("assets/shaders/TextureShader.glsl");
+
+		m_texture2D = Jass::Texture2D::Create("assets/textures/Checkerboard.png");
+		m_textureAlpha2D = Jass::Texture2D::Create("assets/textures/Appricot.png");
+
+		float positions[] = {
+			-0.75f, -0.75f, 0.0f, 0.0f, 0.0f,	// 0
+			0.75f, -0.75f, 0.0f, 1.0f, 0.0f,	// 1
+			0.75f, 0.75f, 0.0f, 1.0f, 1.0f,		// 2
+			-0.75f, 0.75f, 0.0f, 0.0f, 1.0f		// 3
+		};
+
+		unsigned int indices[] = {
+			0, 1, 2,
+			2, 3, 0
+		};
+
+		m_texSquareVertexArray = Jass::VertexArray::Create();
+
+		auto vertexBuffer = Jass::VertexBuffer::Create({ positions,sizeof(positions),Jass::DataUsage::StaticDraw });
+		vertexBuffer->SetLayout({
+			Jass::BufferElement(Jass::ShaderDataType::Float3,"position"),
+			Jass::BufferElement(Jass::ShaderDataType::Float2,"texCoords")
+			});
+
+		m_texSquareVertexArray->AddVertexBuffer(vertexBuffer);
+
+		auto indexBuffer = Jass::IndexBuffer::Create({ indices,6,Jass::DataUsage::StaticDraw });
+
+		m_texSquareVertexArray->SetIndexBuffer(indexBuffer);
+
+		std::dynamic_pointer_cast<Jass::OpenGLShader>(texShader)->Bind();
+		std::dynamic_pointer_cast<Jass::OpenGLShader>(texShader)->UploadUniformInt("u_texture", 0);
 	}
 
-	void MoveTriangle(glm::mat4& transformation, Jass::Timestep ts)
+	void MoveTriangle(Jass::JMat4& transformation, Jass::Timestep ts)
 	{
-		static glm::vec3 trianglePosition(0.0f);
+		static Jass::JVec3 trianglePosition(0.0f);
 		float triangleSpeed = 3.0f;
 
 		if (Jass::Input::IsKeyPressed(JASS_KEY_L))
@@ -256,7 +245,7 @@ private:
 		else if (Jass::Input::IsKeyPressed(JASS_KEY_K))
 			trianglePosition.y -= triangleSpeed * ts;
 
-		transformation = glm::translate(glm::mat4(1.0f), trianglePosition);
+		transformation = Jass::Translate(Jass::JMat4(1.0f), trianglePosition);
 	}
 
 };
