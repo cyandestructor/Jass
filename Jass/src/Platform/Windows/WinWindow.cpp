@@ -36,6 +36,8 @@ namespace Jass {
 
 	void WinWindow::Init(const WindowProps& properties)
 	{
+		JASS_PROFILE_FUNCTION();
+
 		m_windowData.Title = properties.Title;
 		m_windowData.Width = properties.Width;
 		m_windowData.Height = properties.Height;
@@ -45,6 +47,8 @@ namespace Jass {
 
 		if (!s_glfwInitialized) {
 
+			JASS_PROFILE_SCOPE("glfw Init");
+
 			int success = glfwInit();
 			JASS_CORE_ASSERT(success, "Could not initialize GLFW");
 			glfwSetErrorCallback(GLFWErrorCallback);
@@ -52,8 +56,20 @@ namespace Jass {
 
 		}
 
-		m_window = glfwCreateWindow((int)m_windowData.Width, (int)m_windowData.Height,
-			m_windowData.Title.c_str(), nullptr, nullptr);
+#ifdef JASS_DEBUG
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif // JASS_DEBUG
+
+		{
+			JASS_PROFILE_SCOPE("glfw CreateWindow");
+			m_window = glfwCreateWindow((int)m_windowData.Width, (int)m_windowData.Height,
+				m_windowData.Title.c_str(), nullptr, nullptr);
+		}
+
+		if (!m_window) {
+			JASS_CORE_ERR("Failed to create the window with title: {0}", m_windowData.Title);
+		}
+
 		//Create the context
 		m_context = std::make_unique<OpenGLContext>(m_window);
 		m_context->Init();

@@ -1,6 +1,10 @@
 #include "jasspch.h"
 #include "OpenGLContext.h"
 
+#ifdef JASS_DEBUG
+#include "Jass/Debug/RendererDebugLog.h"
+#endif // JASS_DEBUG
+
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
@@ -14,6 +18,8 @@ namespace Jass {
 
 	void OpenGLContext::Init()
 	{
+		JASS_PROFILE_FUNCTION();
+
 		glfwMakeContextCurrent(m_windowHandler);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		JASS_CORE_ASSERT(status, "Could not initialize Glad");
@@ -23,10 +29,16 @@ namespace Jass {
 		JASS_CORE_INFO("Renderer: {0}", glGetString(GL_RENDERER));
 		JASS_CORE_INFO("Version: {0}", glGetString(GL_VERSION));
 
+#ifdef JASS_DEBUG
+		RendererDebugLog::Init();
+#endif // JASS_DEBUG
+
 	}
 
 	void OpenGLContext::SwapBuffers()
 	{
+		JASS_PROFILE_FUNCTION();
+
 		glfwSwapBuffers(m_windowHandler);
 	}
 
