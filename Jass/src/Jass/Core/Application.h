@@ -5,6 +5,7 @@
 #include "IWindow.h"
 #include "Jass/Events/ApplicationEvents.h"
 #include "LayerStack.h"
+#include "Jass/ImGui/ImGuiLayer.h"
 
 namespace Jass {
 	
@@ -13,7 +14,7 @@ namespace Jass {
 	class JASS_API Application
 	{
 	public:
-		Application();
+		Application(const std::string& name = "Jass Application");
 		virtual ~Application();
 
 		static Application& Get() { return *s_instance; }
@@ -24,7 +25,10 @@ namespace Jass {
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
 
+		ImGuiLayer& GetImGuiLayer() { return *m_imGuiLayer; }
+
 		void Run();
+		void Close();
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);

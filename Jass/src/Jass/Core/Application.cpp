@@ -4,7 +4,6 @@
 #include "Jass/Events/EventDispatcher.h"
 #include "Jass/Renderer/Renderer.h"
 #include "Jass/Renderer/Renderer2D.h"
-#include "Jass/ImGui/ImGuiLayer.h"
 
 // TEMPORARY
 #include <GLFW/glfw3.h>
@@ -13,7 +12,7 @@ namespace Jass {
 
 	Application* Application::s_instance = nullptr;
 
-	Application::Application()
+	Application::Application(const std::string& name)
 	{
 		JASS_PROFILE_FUNCTION();
 	
@@ -22,7 +21,7 @@ namespace Jass {
 
 		{
 			JASS_PROFILE_SCOPE("Window creation");
-			m_window = std::unique_ptr<IWindow>(IWindow::Create());
+			m_window = std::unique_ptr<IWindow>(IWindow::Create(WindowProps(name)));
 		}
 		m_window->SetEventCallBack(BIND_EVENT_FN(Application::OnEvent));
 
@@ -109,9 +108,14 @@ namespace Jass {
 		}
 	}
 
-	bool Application::OnWindowClose(WindowCloseEvent& e)
+	void Application::Close()
 	{
 		m_isRunning = false;
+	}
+
+	bool Application::OnWindowClose(WindowCloseEvent& e)
+	{
+		Close();
 		return true;
 	}
 

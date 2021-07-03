@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>jasspch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>JASS_PLATFORM_WINDOWS;JASS_BUILD_DLL;GLFW_INCLUDE_NONE;JASS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\spdlog\include;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor\spdlog\include;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -97,7 +97,7 @@
       <PrecompiledHeaderFile>jasspch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>JASS_PLATFORM_WINDOWS;JASS_BUILD_DLL;GLFW_INCLUDE_NONE;JASS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\spdlog\include;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor\spdlog\include;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -121,7 +121,7 @@
       <PrecompiledHeaderFile>jasspch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>JASS_PLATFORM_WINDOWS;JASS_BUILD_DLL;GLFW_INCLUDE_NONE;JASS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\spdlog\include;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor\spdlog\include;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -157,11 +157,13 @@
     <ClInclude Include="src\Jass\Core\Log.h" />
     <ClInclude Include="src\Jass\Core\LogEnums.h" />
     <ClInclude Include="src\Jass\Core\MouseButtonCodes.h" />
-    <ClInclude Include="src\Jass\Debug\Instrumentor.h" />
-    <ClInclude Include="src\Jass\Debug\IRendererDebugOutput.h" />
-    <ClInclude Include="src\Jass\Debug\RendererDebugLog.h" />
     <ClInclude Include="src\Jass\Core\SpdLogger.h" />
     <ClInclude Include="src\Jass\Core\Timestep.h" />
+    <ClInclude Include="src\Jass\Debug\IRendererDebugOutput.h" />
+    <ClInclude Include="src\Jass\Debug\Instrumentor.h" />
+    <ClInclude Include="src\Jass\Debug\RendererDebugLog.h" />
+    <ClInclude Include="src\Jass\ECS\Components\Components.h" />
+    <ClInclude Include="src\Jass\ECS\Entity.h" />
     <ClInclude Include="src\Jass\Events\ApplicationEvents.h" />
     <ClInclude Include="src\Jass\Events\Event.h" />
     <ClInclude Include="src\Jass\Events\EventDispatcher.h" />
@@ -184,6 +186,7 @@
     <ClInclude Include="src\Jass\JMath\JMath.h" />
     <ClInclude Include="src\Jass\Renderer\BufferLayout.h" />
     <ClInclude Include="src\Jass\Renderer\DataUsageEnum.h" />
+    <ClInclude Include="src\Jass\Renderer\Framebuffer.h" />
     <ClInclude Include="src\Jass\Renderer\IRenderContext.h" />
     <ClInclude Include="src\Jass\Renderer\IndexBuffer.h" />
     <ClInclude Include="src\Jass\Renderer\RenderCommand.h" />
@@ -197,7 +200,10 @@
     <ClInclude Include="src\Jass\Renderer\Textures\Texture2D.h" />
     <ClInclude Include="src\Jass\Renderer\VertexArray.h" />
     <ClInclude Include="src\Jass\Renderer\VertexBuffer.h" />
+    <ClInclude Include="src\Jass\Scene\Scene.h" />
+    <ClInclude Include="src\Jass\Utility\JassUtilities.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLIndexBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererDebugOutput.h" />
@@ -205,7 +211,6 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\Textures\OpenGLTexture2D.h" />
-    <ClInclude Include="src\Platform\Windows\WinInput.h" />
     <ClInclude Include="src\Platform\Windows\WinWindow.h" />
     <ClInclude Include="src\jasspch.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -623,13 +628,16 @@
     <ClCompile Include="src\Jass\Camera\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Jass\Camera\PerspectiveCamera.cpp" />
     <ClCompile Include="src\Jass\Core\Application.cpp" />
+    <ClCompile Include="src\Jass\Core\Input.cpp" />
     <ClCompile Include="src\Jass\Core\Layer.cpp" />
     <ClCompile Include="src\Jass\Core\LayerStack.cpp" />
-    <ClCompile Include="src\Jass\Debug\RendererDebugLog.cpp" />
     <ClCompile Include="src\Jass\Core\SpdLogger.cpp" />
+    <ClCompile Include="src\Jass\Debug\RendererDebugLog.cpp" />
+    <ClCompile Include="src\Jass\ECS\Entity.cpp" />
     <ClCompile Include="src\Jass\ImGui\BuildImGui.cpp" />
     <ClCompile Include="src\Jass\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Jass\JMath\JMath.cpp" />
+    <ClCompile Include="src\Jass\Renderer\Framebuffer.cpp" />
     <ClCompile Include="src\Jass\Renderer\IndexBuffer.cpp" />
     <ClCompile Include="src\Jass\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Jass\Renderer\Renderer.cpp" />
@@ -642,7 +650,10 @@
     <ClCompile Include="src\Jass\Renderer\Textures\Texture2D.cpp" />
     <ClCompile Include="src\Jass\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Jass\Renderer\VertexBuffer.cpp" />
+    <ClCompile Include="src\Jass\Scene\Scene.cpp" />
+    <ClCompile Include="src\Jass\Utility\JassUtilities.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLIndexBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererDebugOutput.cpp" />
@@ -650,7 +661,6 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\Textures\OpenGLTexture2D.cpp" />
-    <ClCompile Include="src\Platform\Windows\WinInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WinWindow.cpp" />
     <ClCompile Include="src\jasspch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
