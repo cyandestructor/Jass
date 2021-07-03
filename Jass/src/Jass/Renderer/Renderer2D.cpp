@@ -119,7 +119,7 @@ namespace Jass {
 	{
 	}
 
-	void Renderer2D::BeginScene(const OrthographicCamera& camera)
+	void Renderer2D::BeginScene(const Camera& camera)
 	{
 		JASS_PROFILE_FUNCTION();
 

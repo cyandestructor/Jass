@@ -1,7 +1,7 @@
 #ifndef RENDERER2D_H_JASS
 #define RENDERER2D_H_JASS
 
-#include "Jass/Camera/OrthographicCamera.h"
+#include "Jass/Camera/Camera.h"
 #include "Jass/Renderer/Textures/Texture2D.h"
 #include "Jass/Renderer/Textures/SubTexture2D.h"
 
@@ -25,7 +25,7 @@ namespace Jass {
 		static void Init();
 		static void Shutdown();
 		
-		static void BeginScene(const OrthographicCamera& camera);
+		static void BeginScene(const Camera& camera);
 		static void EndScene();
 
 		static void Flush();
