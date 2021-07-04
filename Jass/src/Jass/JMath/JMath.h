@@ -23,6 +23,8 @@ namespace Jass {
 	JMat4 Rotate(const JMat4& matrix, float angle, const JVec3& vector);
 	JMat4 PerspectiveFOV(float fov, float width, float height, float zNear, float zFar);
 	JMat4 Orthographic(float left, float right, float bottom, float top, float zNear, float zFar);
+	JMat3 Inverse(const JMat3& matrix);
+	JMat4 Inverse(const JMat4& matrix);
 	float Radians(float degrees);
 	float* GetPtr(JMat3& matrix);
 	float* GetPtr(JMat4& matrix);

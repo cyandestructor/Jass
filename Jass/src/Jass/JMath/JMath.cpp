@@ -32,6 +32,16 @@ namespace Jass {
 		return glm::ortho(left, right, bottom, top, zNear, zFar);
 	}
 
+	JMat3 Inverse(const JMat3& matrix)
+	{
+		return glm::inverse(matrix);
+	}
+
+	JMat4 Inverse(const JMat4& matrix)
+	{
+		return glm::inverse(matrix);
+	}
+
 	float Radians(float degrees)
 	{
 		return glm::radians(degrees);
