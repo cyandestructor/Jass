@@ -9,13 +9,20 @@ namespace Jass {
 	{
 		TransformationComponent() = default;
 		TransformationComponent(const TransformationComponent& other) = default;
-		TransformationComponent(const JMat4& transformation) :
-			Transformation(transformation) {}
 
-		operator JMat4& () { return Transformation; }
-		operator const JMat4&() const { return Transformation; }
-
-		JMat4 Transformation = JMat4(1.0f);
+		JVec3 Position = JVec3(0.0f);
+		JVec3 Rotation = JVec3(0.0f);
+		JVec3 Scale = JVec3(1.0f);
+		
+		JMat4 GetTransformation() const
+		{
+			JMat4 transformation = Translate(JMat4(1.0f), Position);
+			transformation = Rotate(transformation, Radians(Rotation.x), JVec3(-1.0f, 0.0f, 0.0f));
+			transformation = Rotate(transformation, Radians(Rotation.y), JVec3(0.0f, -1.0f, 0.0f));
+			transformation = Rotate(transformation, Radians(Rotation.z), JVec3(0.0f, 0.0f, -1.0f));
+			transformation = Jass::Scale(transformation, Scale);
+			return transformation;
+		}
 	};
 
 	struct SpriteComponent

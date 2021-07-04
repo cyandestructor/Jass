@@ -17,7 +17,7 @@ namespace Jass {
 
 		for (auto entity : group) {
 			auto& [transformation, sprite] = group.get<TransformationComponent, SpriteComponent>(entity);
-			Renderer2D::DrawQuad(transformation, sprite.Color);
+			Renderer2D::DrawQuad(transformation.GetTransformation(), sprite.Color);
 		}
 	}
 
