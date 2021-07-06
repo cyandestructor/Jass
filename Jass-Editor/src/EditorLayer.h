@@ -24,6 +24,8 @@ namespace Jass {
 
 		Ref<Scene> m_scene;
 		Entity m_squareEntity;
+		Entity m_firstCamera;
+		Entity m_secondCamera;
 
 		Ref<Framebuffer> m_framebuffer;
 

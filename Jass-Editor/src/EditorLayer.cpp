@@ -16,7 +16,15 @@ namespace Jass {
 
 		// TEMPORARY
 		m_squareEntity = m_scene->CreateEntity();
+		m_firstCamera = m_scene->CreateEntity();
+		m_secondCamera = m_scene->CreateEntity();
+
 		m_squareEntity.AddComponent<SpriteComponent>(JVec4{ 0.3f, 0.2f, 0.8f, 1.0f });
+
+		m_firstCamera.AddComponent<CameraComponent>(MakeScope<OrthographicSceneCamera>(), true);
+		
+		m_secondCamera.AddComponent<CameraComponent>(MakeScope<OrthographicSceneCamera>(5.0f));
+		m_secondCamera.GetComponent<TransformationComponent>().Position = JVec3(2.0f, 2.0f, 0.0f);
 
 		FramebufferConfig fbConfig;
 		fbConfig.Width = 1280;
@@ -41,9 +49,7 @@ namespace Jass {
 		RenderCommand::SetClearColor({ 0.2f, 0.2f, 0.2f, 0.0f });
 		RenderCommand::Clear();
 
-		Renderer2D::BeginScene(m_cameraController.GetCamera());
 		m_scene->OnUpdate(ts);
-		Renderer2D::EndScene();
 		
 		m_framebuffer->Unbind();
 	}
@@ -137,6 +143,15 @@ namespace Jass {
 		ImGui::Text(m_squareEntity.GetComponent<TagComponent>().Tag.c_str());
 		auto& squareColor = m_squareEntity.GetComponent<SpriteComponent>().Color;
 		ImGui::ColorEdit4("Color", GetPtr(squareColor));
+
+		if (ImGui::Checkbox("First camera", &m_firstCamera.GetComponent<CameraComponent>().Main)) {
+			m_secondCamera.GetComponent<CameraComponent>().Main = !m_secondCamera.GetComponent<CameraComponent>().Main;
+		}
+
+		if (ImGui::Checkbox("Second camera", &m_secondCamera.GetComponent<CameraComponent>().Main)) {
+			m_firstCamera.GetComponent<CameraComponent>().Main = !m_firstCamera.GetComponent<CameraComponent>().Main;
+		}
+
 		ImGui::Separator();
 
 		ImGui::End();
