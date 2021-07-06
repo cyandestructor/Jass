@@ -13,11 +13,30 @@ namespace Jass {
 
 	void Scene::OnUpdate(Timestep ts)
 	{
-		auto group = m_registry.group<TransformationComponent>(entt::get<SpriteComponent>);
+		// Get the main camera
+		Scope<Camera> mainCamera = nullptr;
+		{
+			auto group = m_registry.group<CameraComponent>(entt::get<TransformationComponent>);
 
-		for (auto entity : group) {
-			auto& [transformation, sprite] = group.get<TransformationComponent, SpriteComponent>(entity);
-			Renderer2D::DrawQuad(transformation.GetTransformation(), sprite.Color);
+			for (auto entity : group) {
+				auto& [camera, transformation] = group.get<CameraComponent, TransformationComponent>(entity);
+				if (camera.Main) {
+					mainCamera = camera.Camera->GetCamera(transformation.Position, transformation.Rotation);
+					break;
+				}
+			}
+		}
+		
+		if (mainCamera) {
+			// Render 2D
+			auto group = m_registry.group<TransformationComponent>(entt::get<SpriteComponent>);
+
+			Renderer2D::BeginScene(*mainCamera);
+			for (auto entity : group) {
+				auto& [transformation, sprite] = group.get<TransformationComponent, SpriteComponent>(entity);
+				Renderer2D::DrawQuad(transformation.GetTransformation(), sprite.Color);
+			}
+			Renderer2D::EndScene();
 		}
 	}
 
