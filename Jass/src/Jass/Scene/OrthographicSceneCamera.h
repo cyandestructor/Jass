@@ -8,7 +8,7 @@ namespace Jass {
 	class OrthographicSceneCamera : public SceneCamera {
 	public:
 		OrthographicSceneCamera() = default;
-		OrthographicSceneCamera(float size, float aspectRatio, float nearPlane, float farPlane);
+		OrthographicSceneCamera(float size, float aspectRatio = 1.0f, float nearPlane = -1.0f, float farPlane = 1.0f);
 
 		virtual ~OrthographicSceneCamera() = default;
 

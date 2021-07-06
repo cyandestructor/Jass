@@ -2,6 +2,7 @@
 #define COMPONENTS_H_JASS
 
 #include "Jass/JMath/JMath.h"
+#include "Jass/Scene/OrthographicSceneCamera.h"
 
 namespace Jass {
 
@@ -23,6 +24,20 @@ namespace Jass {
 			transformation = Jass::Scale(transformation, Scale);
 			return transformation;
 		}
+	};
+
+	struct CameraComponent
+	{
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent& other) = default;
+		CameraComponent(CameraComponent&& other) = default;
+		CameraComponent& operator=(const CameraComponent& other) = default;
+		CameraComponent& operator=(CameraComponent&& other) = default;
+		CameraComponent(Scope<SceneCamera> camera, bool main = false)
+			: Camera(std::move(camera)), Main(main) {}
+
+		Scope<SceneCamera> Camera = nullptr;
+		bool Main = false;
 	};
 
 	struct SpriteComponent
