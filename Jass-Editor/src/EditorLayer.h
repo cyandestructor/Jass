@@ -35,6 +35,7 @@ namespace Jass {
 		void ShowDockableGUI();
 
 		void DrawViewport();
+		void OnViewportResize(const JVec2& viewportSize);
 
 	};
 

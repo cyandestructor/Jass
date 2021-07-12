@@ -38,6 +38,7 @@ namespace Jass {
 
 		Scope<SceneCamera> Camera = nullptr;
 		bool Main = false;
+		bool FixedAspectRatio = false;
 	};
 
 	struct SpriteComponent

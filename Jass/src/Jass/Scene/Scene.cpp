@@ -40,6 +40,18 @@ namespace Jass {
 		}
 	}
 
+	void Scene::OnViewportResize(unsigned int width, unsigned int height)
+	{
+		auto view = m_registry.view<CameraComponent>();
+
+		for (auto entity : view) {
+			auto& camera = view.get<CameraComponent>(entity);
+			if (!camera.FixedAspectRatio) {
+				camera.Camera->SetViewportSize(width, height);
+			}
+		}
+	}
+
 	Entity Scene::CreateEntity(const std::string& tag)
 	{
 		Entity entity = { m_registry.create(), this };

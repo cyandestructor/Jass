@@ -16,6 +16,7 @@ namespace Jass {
 		Scene();
 
 		void OnUpdate(Timestep ts);
+		void OnViewportResize(unsigned int width, unsigned int height);
 
 		Entity CreateEntity(const std::string& tag = std::string());
 

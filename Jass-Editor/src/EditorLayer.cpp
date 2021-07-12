@@ -173,9 +173,7 @@ namespace Jass {
 		Application::Get().GetImGuiLayer().BlockEvents(!(m_isViewportFocused && isViewportHovered));
 
 		if (m_viewportSize != newViewportSize) {
-			m_framebuffer->Resize((unsigned int)newViewportSize.x, (unsigned int)newViewportSize.y);
-			m_cameraController.OnResize((unsigned int)newViewportSize.x, (unsigned int)newViewportSize.y);
-			m_viewportSize = newViewportSize;
+			OnViewportResize(newViewportSize);
 		}
 
 		ImGui::Image((ImTextureID)(uint64_t)viewportImgID,
@@ -183,6 +181,15 @@ namespace Jass {
 			ImVec2{ 0.0f, 1.0f }, ImVec2{ 1.0f, 0.0f });
 		ImGui::End();
 		ImGui::PopStyleVar();
+	}
+
+	void EditorLayer::OnViewportResize(const JVec2& viewportSize)
+	{
+		unsigned int width = (unsigned int)viewportSize.x, height = (unsigned int)viewportSize.y;
+		m_framebuffer->Resize(width, height);
+		m_cameraController.OnResize(width, height);
+		m_scene->OnViewportResize(width, height);
+		m_viewportSize = viewportSize;
 	}
 
 }
