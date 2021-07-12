@@ -40,6 +40,15 @@ namespace Jass {
 	{
 		JASS_PROFILE_FUNCTION();
 
+		// Resize
+		auto fbConfig = m_framebuffer->GetConfig();
+		if ((m_viewportSize.x > 0.0f && m_viewportSize.y > 0.0f) && // Only non-zero viewport is valid
+			(fbConfig.Width != m_viewportSize.x || fbConfig.Height != m_viewportSize.y))
+		{
+			OnViewportResize((unsigned int)m_viewportSize.x, (unsigned int)m_viewportSize.y);
+		}
+
+		// Render
 		Renderer2D::ResetStatistics();
 		m_framebuffer->Bind();
 
@@ -165,16 +174,12 @@ namespace Jass {
 		ImGui::Begin("Viewport");
 		auto viewportImgID = m_framebuffer->GetColorAttachmentRendererID();
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		JVec2 newViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+		m_viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		// Block events if the viewport is not focused and hovered
 		m_isViewportFocused = ImGui::IsWindowFocused();
 		bool isViewportHovered = ImGui::IsWindowHovered();
 		Application::Get().GetImGuiLayer().BlockEvents(!(m_isViewportFocused && isViewportHovered));
-
-		if (m_viewportSize != newViewportSize) {
-			OnViewportResize(newViewportSize);
-		}
 
 		ImGui::Image((ImTextureID)(uint64_t)viewportImgID,
 			ImVec2{ m_viewportSize.x, m_viewportSize.y },
@@ -183,13 +188,11 @@ namespace Jass {
 		ImGui::PopStyleVar();
 	}
 
-	void EditorLayer::OnViewportResize(const JVec2& viewportSize)
+	void EditorLayer::OnViewportResize(unsigned int width, unsigned int height)
 	{
-		unsigned int width = (unsigned int)viewportSize.x, height = (unsigned int)viewportSize.y;
 		m_framebuffer->Resize(width, height);
-		m_cameraController.OnResize(width, height);
 		m_scene->OnViewportResize(width, height);
-		m_viewportSize = viewportSize;
+		m_cameraController.OnResize(width, height);
 	}
 
 }
