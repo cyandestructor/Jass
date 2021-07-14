@@ -203,6 +203,7 @@
     <ClInclude Include="src\Jass\Scene\OrthographicSceneCamera.h" />
     <ClInclude Include="src\Jass\Scene\Scene.h" />
     <ClInclude Include="src\Jass\Scene\SceneCamera.h" />
+    <ClInclude Include="src\Jass\Scene\Scriptable.h" />
     <ClInclude Include="src\Jass\Utility\JassUtilities.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h" />

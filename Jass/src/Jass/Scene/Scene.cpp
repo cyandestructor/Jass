@@ -13,6 +13,18 @@ namespace Jass {
 
 	void Scene::OnUpdate(Timestep ts)
 	{
+		m_registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
+			// TODO: Move to OnScenePlay
+			if (!nsc.Instance) {
+				nsc.Instance = nsc.Instantiate();
+				nsc.Instance->m_entity = Entity(entity, this);
+				nsc.Instance->OnCreate();
+			}
+
+			nsc.Instance->OnUpdate(ts);
+			// TODO: Call OnDestroy and Destroy for scripts when Scene stops
+		});
+
 		// Get the main camera
 		Scope<Camera> mainCamera = nullptr;
 		{

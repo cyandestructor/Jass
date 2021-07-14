@@ -1517,6 +1517,7 @@
     <ClInclude Include="src\Jass\ECS\Entity.h" />
     <ClInclude Include="src\Jass\Scene\SceneCamera.h" />
     <ClInclude Include="src\Jass\Scene\OrthographicSceneCamera.h" />
+    <ClInclude Include="src\Jass\Scene\Scriptable.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Jass\Camera\OrthographicCamera.cpp">

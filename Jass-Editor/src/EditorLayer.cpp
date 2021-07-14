@@ -3,6 +3,34 @@
 
 namespace Jass {
 
+#define MOVE_SQUARE 1
+#if MOVE_SQUARE
+	class MoveSquare : public Scriptable
+	{
+		void OnCreate() {
+			JASS_LOG_INFO("MoveSquare created");
+		}
+
+		void OnUpdate(Timestep ts) {
+			auto& position = GetComponent<TransformationComponent>().Position;
+			float speed = 5.0f;
+
+			if (Input::IsKeyPressed(JASS_KEY_W)) {
+				position.y += speed * ts;
+			}
+			if (Input::IsKeyPressed(JASS_KEY_A)) {
+				position.x -= speed * ts;
+			}
+			if (Input::IsKeyPressed(JASS_KEY_S)) {
+				position.y -= speed * ts;
+			}
+			if (Input::IsKeyPressed(JASS_KEY_D)) {
+				position.x += speed * ts;
+			}
+		}
+	};
+#endif // MOVE_SQUARE
+
 	EditorLayer::EditorLayer() :
 		Layer("EditorLayer"), m_cameraController(1280.0f / 720.0f)
 	{
@@ -20,6 +48,9 @@ namespace Jass {
 		m_secondCamera = m_scene->CreateEntity();
 
 		m_squareEntity.AddComponent<SpriteComponent>(JVec4{ 0.3f, 0.2f, 0.8f, 1.0f });
+#if MOVE_SQUARE
+		m_squareEntity.AddComponent<NativeScriptComponent>().Bind<MoveSquare>();
+#endif // MOVE_SQUARE
 
 		m_firstCamera.AddComponent<CameraComponent>(MakeScope<OrthographicSceneCamera>(), true);
 		
