@@ -2,7 +2,6 @@
 #define COMPONENTS_H_JASS
 
 #include "Jass/JMath/JMath.h"
-#include "Jass/Scene/Scriptable.h"
 #include "Jass/Scene/OrthographicSceneCamera.h"
 
 namespace Jass {
@@ -60,22 +59,6 @@ namespace Jass {
 			Tag(tag) {}
 
 		std::string Tag;
-	};
-
-	struct NativeScriptComponent
-	{
-		NativeScriptComponent() = default;
-		NativeScriptComponent(const NativeScriptComponent& other) = default;
-
-		Scriptable* Instance = nullptr;
-		Scriptable* (*Instantiate)();
-		void (*Destroy)(NativeScriptComponent& nsc);
-
-		template <typename T>
-		void Bind() {
-			Instantiate = []() { return static_cast<Scriptable*>(new T()); };
-			Destroy = [](NativeScriptComponent& nsc) { delete nsc.Instance; nsc.Instance = nullptr; };
-		}
 	};
 
 }

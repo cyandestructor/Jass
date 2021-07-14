@@ -1518,6 +1518,7 @@
     <ClInclude Include="src\Jass\Scene\SceneCamera.h" />
     <ClInclude Include="src\Jass\Scene\OrthographicSceneCamera.h" />
     <ClInclude Include="src\Jass\Scene\Scriptable.h" />
+    <ClInclude Include="src\Jass\ECS\Components\NativeScriptComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Jass\Camera\OrthographicCamera.cpp">

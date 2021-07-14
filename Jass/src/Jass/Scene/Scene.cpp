@@ -2,7 +2,7 @@
 #include "Scene.h"
 
 #include "Jass/ECS/Components/Components.h"
-#include "Jass/ECS/Entity.h"
+#include "Jass/Scene/Scriptable.h"
 #include "Jass/Renderer/Renderer2D.h"
 
 namespace Jass {
@@ -15,14 +15,18 @@ namespace Jass {
 	{
 		m_registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
 			// TODO: Move to OnScenePlay
-			if (!nsc.Instance) {
-				nsc.Instance = nsc.Instantiate();
-				nsc.Instance->m_entity = Entity(entity, this);
-				nsc.Instance->OnCreate();
-			}
+			for (auto& script : nsc.NativeScripts) {
+				if (!script.Instance) {
+					// Instantiate the class of the script on scene play
+					script.Instance = script.Instantiate();
+					script.Instance->m_entity = Entity(entity, this);
 
-			nsc.Instance->OnUpdate(ts);
-			// TODO: Call OnDestroy and Destroy for scripts when Scene stops
+					script.Instance->OnCreate();
+				}
+
+				script.Instance->OnUpdate(ts);
+				// TODO: Call OnDestroy and Destroy for scripts when Scene stops
+			}
 		});
 
 		// Get the main camera

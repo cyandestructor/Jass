@@ -29,6 +29,30 @@ namespace Jass {
 			}
 		}
 	};
+
+	class ColorSquare : public Scriptable
+	{
+		void OnCreate() {
+			JASS_LOG_INFO("RandomColor created");
+		}
+
+		void OnUpdate(Timestep ts) {
+			auto& color = GetComponent<SpriteComponent>().Color;
+
+			if (Input::IsKeyPressed(JASS_KEY_W)) {
+				color = JVec4(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+			if (Input::IsKeyPressed(JASS_KEY_A)) {
+				color = JVec4(1.0f, 0.0f, 0.0f, 1.0f);
+			}
+			if (Input::IsKeyPressed(JASS_KEY_S)) {
+				color = JVec4(0.0f, 1.0f, 0.0f, 1.0f);
+			}
+			if (Input::IsKeyPressed(JASS_KEY_D)) {
+				color = JVec4(0.0f, 0.0f, 1.0f, 1.0f);
+			}
+		}
+	};
 #endif // MOVE_SQUARE
 
 	EditorLayer::EditorLayer() :
@@ -49,7 +73,8 @@ namespace Jass {
 
 		m_squareEntity.AddComponent<SpriteComponent>(JVec4{ 0.3f, 0.2f, 0.8f, 1.0f });
 #if MOVE_SQUARE
-		m_squareEntity.AddComponent<NativeScriptComponent>().Bind<MoveSquare>();
+		m_squareEntity.AddNativeScript<MoveSquare>();
+		m_squareEntity.AddNativeScript<ColorSquare>();
 #endif // MOVE_SQUARE
 
 		m_firstCamera.AddComponent<CameraComponent>(MakeScope<OrthographicSceneCamera>(), true);
@@ -181,8 +206,8 @@ namespace Jass {
 
 		ImGui::Separator();
 		ImGui::Text(m_squareEntity.GetComponent<TagComponent>().Tag.c_str());
-		auto& squareColor = m_squareEntity.GetComponent<SpriteComponent>().Color;
-		ImGui::ColorEdit4("Color", GetPtr(squareColor));
+		/*auto& squareColor = m_squareEntity.GetComponent<SpriteComponent>().Color;
+		ImGui::ColorEdit4("Color", GetPtr(squareColor));*/
 
 		if (ImGui::Checkbox("First camera", &m_firstCamera.GetComponent<CameraComponent>().Main)) {
 			m_secondCamera.GetComponent<CameraComponent>().Main = !m_secondCamera.GetComponent<CameraComponent>().Main;
