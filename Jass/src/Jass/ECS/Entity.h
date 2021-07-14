@@ -7,11 +7,11 @@
 namespace Jass {
 
 	class JASS_API Entity {
+		friend class Scene;
 
 	public:
 		Entity() = default;
 		Entity(const Entity&) = default;
-		Entity(entt::entity handler, Scene* scene);
 
 		template<typename Component>
 		bool HasComponent() const
@@ -65,6 +65,8 @@ namespace Jass {
 	private:
 		entt::entity m_handler = entt::null;
 		Scene* m_scene = nullptr;
+
+		Entity(entt::entity handler, Scene* scene);
 
 	};
 

@@ -35,7 +35,7 @@ namespace Jass {
 			auto group = m_registry.group<CameraComponent>(entt::get<TransformationComponent>);
 
 			for (auto entity : group) {
-				auto& [camera, transformation] = group.get<CameraComponent, TransformationComponent>(entity);
+				auto [camera, transformation] = group.get<CameraComponent, TransformationComponent>(entity);
 				if (camera.Main) {
 					mainCamera = camera.Camera->GetCamera(transformation.Position, transformation.Rotation);
 					break;
@@ -49,7 +49,7 @@ namespace Jass {
 
 			Renderer2D::BeginScene(*mainCamera);
 			for (auto entity : group) {
-				auto& [transformation, sprite] = group.get<TransformationComponent, SpriteComponent>(entity);
+				auto [transformation, sprite] = group.get<TransformationComponent, SpriteComponent>(entity);
 				Renderer2D::DrawQuad(transformation.GetTransformation(), sprite.Color);
 			}
 			Renderer2D::EndScene();
