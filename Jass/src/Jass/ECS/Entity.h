@@ -16,7 +16,7 @@ namespace Jass {
 		template<typename Component>
 		bool HasComponent() const
 		{
-			return m_scene->m_registry.has<Component>(m_handler);
+			return m_scene->m_registry.all_of<Component>(m_handler);
 		}
 
 		template<typename Component, typename... Args>
