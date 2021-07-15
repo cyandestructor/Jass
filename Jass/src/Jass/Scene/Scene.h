@@ -11,6 +11,7 @@ namespace Jass {
 	class JASS_API Scene {
 
 		friend class Entity;
+		friend class SceneHierarchyPanel;
 
 	public:
 		Scene();

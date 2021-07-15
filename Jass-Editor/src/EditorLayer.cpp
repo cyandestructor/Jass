@@ -13,11 +13,12 @@ namespace Jass {
 		m_texture = Texture2D::Create("assets/textures/Checkerboard.png");
 
 		m_scene = MakeRef<Scene>();
+		m_sceneHierarchyPanel.SetContext(m_scene);
 
 		// TEMPORARY
-		m_squareEntity = m_scene->CreateEntity();
-		m_firstCamera = m_scene->CreateEntity();
-		m_secondCamera = m_scene->CreateEntity();
+		m_squareEntity = m_scene->CreateEntity("Square");
+		m_firstCamera = m_scene->CreateEntity("Camera A");
+		m_secondCamera = m_scene->CreateEntity("Camera B");
 
 		m_squareEntity.AddComponent<SpriteComponent>(JVec4{ 0.3f, 0.2f, 0.8f, 1.0f });
 
@@ -141,6 +142,8 @@ namespace Jass {
 	void EditorLayer::ShowDockableGUI()
 	{
 		auto statistics = Renderer2D::GetStatistics();
+
+		m_sceneHierarchyPanel.OnImGuiRender();
 
 		ImGui::Begin("Statistics");
 		ImGui::Text("Total Draw Calls: %d", statistics.DrawCalls);

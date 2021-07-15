@@ -2,6 +2,7 @@
 #define EDITOR_LAYER_H
 
 #include <Jass.h>
+#include "GUI/Panels/SceneHierarchyPanel.h"
 
 namespace Jass {
 
@@ -28,6 +29,8 @@ namespace Jass {
 		Entity m_secondCamera;
 
 		Ref<Framebuffer> m_framebuffer;
+
+		SceneHierarchyPanel m_sceneHierarchyPanel;
 
 		bool m_isViewportFocused = false;
 		JVec2 m_viewportSize = JVec2(0.0f);
