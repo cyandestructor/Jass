@@ -148,25 +148,11 @@ namespace Jass {
 		m_propertiesPanel.OnImGuiRender();
 
 		ImGui::Begin("Statistics");
+		
 		ImGui::Text("Total Draw Calls: %d", statistics.DrawCalls);
 		ImGui::Text("Total Quads: %d", statistics.TotalQuads);
 		ImGui::Text("Total Vertices: %d", statistics.GetVertexCount());
 		ImGui::Text("Total Indices: %d", statistics.GetIndexCount());
-
-		ImGui::Separator();
-		ImGui::Text(m_squareEntity.GetComponent<TagComponent>().Tag.c_str());
-		auto& squareColor = m_squareEntity.GetComponent<SpriteComponent>().Color;
-		ImGui::ColorEdit4("Color", GetPtr(squareColor));
-
-		if (ImGui::Checkbox("First camera", &m_firstCamera.GetComponent<CameraComponent>().Main)) {
-			m_secondCamera.GetComponent<CameraComponent>().Main = !m_secondCamera.GetComponent<CameraComponent>().Main;
-		}
-
-		if (ImGui::Checkbox("Second camera", &m_secondCamera.GetComponent<CameraComponent>().Main)) {
-			m_firstCamera.GetComponent<CameraComponent>().Main = !m_firstCamera.GetComponent<CameraComponent>().Main;
-		}
-
-		ImGui::Separator();
 
 		ImGui::End();
 
