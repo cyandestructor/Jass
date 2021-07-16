@@ -12,6 +12,7 @@ namespace Jass {
 
 		friend class Entity;
 		friend class SceneHierarchyPanel;
+		friend class PropertiesPanel;
 
 	public:
 		Scene();

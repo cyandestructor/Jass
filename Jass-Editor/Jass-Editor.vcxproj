@@ -132,12 +132,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorLayer.h" />
+    <ClInclude Include="src\GUI\ComponentDisplay\ComponentDisplay.h" />
     <ClInclude Include="src\GUI\Panels\Panel.h" />
+    <ClInclude Include="src\GUI\Panels\PropertiesPanel.h" />
     <ClInclude Include="src\GUI\Panels\SceneHierarchyPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\GUI\Panels\Panel.cpp" />
+    <ClCompile Include="src\GUI\Panels\PropertiesPanel.cpp" />
     <ClCompile Include="src\GUI\Panels\SceneHierarchyPanel.cpp" />
     <ClCompile Include="src\JassEditor.cpp" />
   </ItemGroup>

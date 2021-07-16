@@ -14,6 +14,7 @@ namespace Jass {
 
 		m_scene = MakeRef<Scene>();
 		m_sceneHierarchyPanel.SetContext(m_scene);
+		m_propertiesPanel.SetContext(m_scene);
 
 		// TEMPORARY
 		m_squareEntity = m_scene->CreateEntity("Square");
@@ -144,6 +145,7 @@ namespace Jass {
 		auto statistics = Renderer2D::GetStatistics();
 
 		m_sceneHierarchyPanel.OnImGuiRender();
+		m_propertiesPanel.OnImGuiRender();
 
 		ImGui::Begin("Statistics");
 		ImGui::Text("Total Draw Calls: %d", statistics.DrawCalls);

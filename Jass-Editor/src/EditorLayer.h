@@ -3,6 +3,7 @@
 
 #include <Jass.h>
 #include "GUI/Panels/SceneHierarchyPanel.h"
+#include "GUI/Panels/PropertiesPanel.h"
 
 namespace Jass {
 
@@ -31,6 +32,7 @@ namespace Jass {
 		Ref<Framebuffer> m_framebuffer;
 
 		SceneHierarchyPanel m_sceneHierarchyPanel;
+		PropertiesPanel m_propertiesPanel;
 
 		bool m_isViewportFocused = false;
 		JVec2 m_viewportSize = JVec2(0.0f);
