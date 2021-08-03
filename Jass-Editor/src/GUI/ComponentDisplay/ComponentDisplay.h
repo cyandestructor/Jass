@@ -15,17 +15,10 @@ namespace Jass {
 		}
 
 		template <>
-		void Display(TagComponent& component)
-		{
-			std::array<char, 256> buffer;
-			buffer.fill(0);
-			strcpy_s(buffer.data(), sizeof(buffer), component.Tag.c_str());
-			if (ImGui::InputText("Tag", buffer.data(), sizeof(buffer)))
-			{
-				component.Tag = std::string(buffer.data());
-			}
-		}
+		void Display(TagComponent& component);
 
+		template <>
+		void Display(TransformationComponent& component);
 	}
 
 }
