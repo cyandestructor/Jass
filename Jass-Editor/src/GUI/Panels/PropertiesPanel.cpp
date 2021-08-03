@@ -1,7 +1,5 @@
 #include "PropertiesPanel.h"
 
-#include "../ComponentDisplay/ComponentDisplay.h"
-
 namespace Jass {
 
 	void PropertiesPanel::OnImGuiRender()
@@ -23,10 +21,15 @@ namespace Jass {
 
 	void PropertiesPanel::DrawComponents(entt::entity entity)
 	{
-		if (m_context->m_registry.all_of<TagComponent>(entity)) {
-			auto& tc = m_context->m_registry.get<TagComponent>(entity);
-			ComponentDisplay::Display<TagComponent>(tc);
+		DrawComponent<TagComponent>(entity);
+		
+		const ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen;
+		if (ImGui::TreeNodeEx((void*)typeid(TransformationComponent).hash_code(), flags, "Transformation"))
+		{
+			DrawComponent<TransformationComponent>(entity);
+			ImGui::TreePop();
 		}
+
 	}
 
 }

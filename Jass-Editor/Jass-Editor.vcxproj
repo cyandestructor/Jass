@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
+    <ClCompile Include="src\GUI\ComponentDisplay\ComponentDisplay.cpp" />
     <ClCompile Include="src\GUI\Panels\Panel.cpp" />
     <ClCompile Include="src\GUI\Panels\PropertiesPanel.cpp" />
     <ClCompile Include="src\GUI\Panels\SceneHierarchyPanel.cpp" />
